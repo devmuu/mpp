@@ -123,6 +123,12 @@ int main(int argc, char **argv) {
             mpd_toggle_status(conn, RANDOM);
         }
 
+        // get desktop
+        else if (strcmp(opt, "desktop") == 0) {
+            MppDesktop d = mpp_desktop_detect();
+            printf("Desktop: %s\n", mpp_desktop_to_string(d));
+        }
+
         // end
         else {
             printf("%s it's not a valid option.\n", opt);
