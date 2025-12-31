@@ -1,4 +1,5 @@
 #include "mpp_client.h"
+#include "mpp_notify.h"
 
 // initialize a mpd connection
 struct mpd_connection *get_conn() {
@@ -106,7 +107,9 @@ void *mpd_toggle_status(struct mpd_connection *conn, MPDStatus status_key) {
     switch(status_key){
         case RANDOM:
             bool C_RANDOM = mpd_status_get_random(status);
-            printf("Random mode is %s.\n", !C_RANDOM ? "on" : "off");
+            char *msg_status = !C_RANDOM ? "on" : "off";
+            printf("Random mode is %s.\n", msg_status);
+            send_dbus_notification("Random Status", msg_status, "", "");
             mpd_run_random(conn, !C_RANDOM);
             break;
 
