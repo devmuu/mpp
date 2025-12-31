@@ -1,11 +1,13 @@
 #include "mpp_config.h"
 #include "src/mpp_notify.h"
+#include "src/mpp_appindicator.h"
 #include <stdio.h>
 #include <string.h>
 // #include <unistd.h>
 
 // main function
 int main(int argc, char **argv) {
+
     // struct to connection and song entities
     struct mpd_connection *conn;
     struct mpd_song *song;
@@ -127,6 +129,15 @@ int main(int argc, char **argv) {
         else if (strcmp(opt, "desktop") == 0) {
             MppDesktop d = mpp_desktop_detect();
             printf("Desktop: %s\n", mpp_desktop_to_string(d));
+        }
+
+        // show appindicator
+        else if (strcmp(opt, "appindicator") == 0) {
+            gtk_init(&argc, &argv);
+            mpp_indicator_init();
+            gtk_main();
+
+            return 0;
         }
 
         // end

@@ -5,8 +5,8 @@
 # ==============================================================================
 
 binfile = mpp
-cfiles = main.c mpp_config.c src/mpp_client.c src/mpp_ffmpeg.c src/mpp_notify.c
-config = `pkgconf --cflags --libs libmpdclient libnotify libavformat MagickWand gdk-pixbuf-2.0 glib-2.0`
+cfiles = main.c mpp_config.c src/mpp_client.c src/mpp_ffmpeg.c src/mpp_notify.c src/mpp_appindicator.c
+config = `pkgconf --cflags --libs libmpdclient libnotify libavformat MagickWand gdk-pixbuf-2.0 glib-2.0 ayatana-appindicator3-0.1`
 systempath = /usr/local/bin
 userpath = ~/.local/bin
 
