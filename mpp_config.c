@@ -5,6 +5,41 @@
 #include <stdlib.h>
 #include <time.h>
 #include <unistd.h>
+#include <glib.h>
+
+// get current desktop env
+MppDesktop mpp_desktop_detect(void) {
+    static MppDesktop cached = MPP_DESKTOP_UNKNOWN;
+    static gboolean detected = FALSE;
+
+    if (detected)
+        return cached;
+
+    const char *d = g_getenv("XDG_CURRENT_DESKTOP");
+    if (!d)
+        d = g_getenv("DESKTOP_SESSION");
+
+    if (d) {
+        if (g_strrstr(d, "GNOME"))
+            cached = MPP_DESKTOP_GNOME;
+        else if (g_strrstr(d, "KDE") || g_strrstr(d, "Plasma"))
+            cached = MPP_DESKTOP_KDE;
+        else if (g_strrstr(d, "Hyprland"))
+            cached = MPP_DESKTOP_HYPRLAND;
+    }
+
+    detected = TRUE;
+    return cached;
+}
+
+const char *mpp_desktop_to_string(MppDesktop d) {
+    switch (d) {
+        case MPP_DESKTOP_GNOME:    return "GNOME";
+        case MPP_DESKTOP_KDE:      return "KDE";
+        case MPP_DESKTOP_HYPRLAND: return "Hyprland";
+        default:                   return "UNKNOWN";
+    }
+}
 
 int mpp_test_conn(){
     struct mpd_connection *conn;
