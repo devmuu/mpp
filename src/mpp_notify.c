@@ -2,13 +2,13 @@
 #include <libnotify/notify.h>
 #include <gio/gio.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
+#include "../mpp_config.h"
 
-// GVariant *create_image_data_from_file(const char *filename);
 
 void send_dbus_notification(const char *artist, const char *title, const char *icon_path, const char *img_uri) {
     static guint replaces_id = 0;
 
-    // Tenta ler ID anterior
+    // try read last id
     FILE *f = fopen(NOTIFY_ID_FILE, "r");
     if (f) {
         fscanf(f, "%u", &replaces_id);
@@ -22,8 +22,8 @@ void send_dbus_notification(const char *artist, const char *title, const char *i
     }
 
     const char *safe_artist = artist && *artist ? artist : " ";
-    const char *safe_title  = title  && *title  ? title  : " ";
-    const char *safe_icon   = icon_path && *icon_path ? icon_path : "music-app";
+    const char *safe_title = title  && *title  ? title  : " ";
+    const char *safe_icon = icon_path && *icon_path ? icon_path : "multimedia-player";
 
     GVariantBuilder tuple;
     g_variant_builder_init(&tuple, G_VARIANT_TYPE_TUPLE);
@@ -65,7 +65,11 @@ void send_dbus_notification(const char *artist, const char *title, const char *i
         g_variant_new_string(img_uri)
     );
 
-    // verificar desktop
+    // TODO:
+    // verificar desktop (Função de detecção criada) -> OK
+    // usar: mpp_desktop_detect()
+    // analisar o desktop para correta implementação.
+
     // const char *desktop = g_getenv("XDG_CURRENT_DESKTOP");
     // if (desktop && g_strrstr(desktop, "GNOME"))
     // printf("Estou no %s", desktop);
@@ -124,51 +128,3 @@ void send_dbus_notification(const char *artist, const char *title, const char *i
     g_object_unref(conn);
 }
 
-// GVariant *create_image_data_from_file(const char *filename) {
-//     GError *error = NULL;
-//
-//     GdkPixbuf *pixbuf = gdk_pixbuf_new_from_file(filename, &error);
-//     if (!pixbuf) {
-//         fprintf(stderr, "Erro ao carregar imagem: %s\n", error->message);
-//         g_error_free(error);
-//         return NULL;
-//     }
-//
-//     int width           = gdk_pixbuf_get_width(pixbuf);
-//     int height          = gdk_pixbuf_get_height(pixbuf);
-//     int rowstride       = gdk_pixbuf_get_rowstride(pixbuf);
-//     int channels        = gdk_pixbuf_get_n_channels(pixbuf);
-//     int has_alpha       = gdk_pixbuf_get_has_alpha(pixbuf);
-//     int bits_per_sample = gdk_pixbuf_get_bits_per_sample(pixbuf);
-//
-//     int data_len;
-//     const guchar *pixels = gdk_pixbuf_get_pixels_with_length(pixbuf, &data_len);
-//
-//     // Constrói o array AY
-//     GVariantBuilder data_builder;
-//     g_variant_builder_init(&data_builder, G_VARIANT_TYPE("ay"));
-//
-//     for (int i = 0; i < data_len; i++) {
-//         g_variant_builder_add(&data_builder, "y", pixels[i]);
-//     }
-//
-//     // Finaliza o array ay
-//     GVariant *data_array = g_variant_builder_end(&data_builder);
-//
-//     // Constrói a tupla (iiiibiiay)
-//
-//     GVariant *variant = g_variant_new(
-//         "(iiiibii@ay)",
-//         width,
-//         height,
-//         rowstride,
-//         has_alpha,
-//         bits_per_sample,
-//         channels,
-//         data_len,
-//         data_array
-//     );
-//
-//     g_object_unref(pixbuf);
-//     return variant;
-// }
